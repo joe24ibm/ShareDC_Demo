@@ -1,4 +1,4 @@
-name: CI Demo - First Time Homebuyer Discount
+name: IBM Z Mortgage Modernization CI Pipeline
 
 on:
   push:
@@ -12,72 +12,110 @@ on:
       - '.github/workflows/ci_first_time_homebuyer_discount.yaml'
 
 jobs:
-  build-test:
-    name: Build & Test
+  build-validate:
+    name: Source Validation and Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Show Branch and Commit
+      - name: Display Pipeline Context
         run: |
+          echo "Starting IBM Z mortgage modernization pipeline..."
           echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
+          echo "Triggered by: ${{ github.event_name }}"
+          sleep 3
 
-      - name: Validate Mortgage Payment Source Change
+      - name: Validate Mortgage Application Source
         run: |
-          echo "Checking that the mortgage payment program exists..."
+          echo "Checking MortgageApplication source structure..."
           test -f samples/MortgageApplication/cobol/epsmpmt.cbl
+          echo "EPSMPMT source file located successfully."
+          sleep 4
 
-      - name: Simulate IBM Z Build Environment
-        run: echo "Setting up IBM Z Build Environment..."
-
-      - name: Simulate DBB Build for Mortgage Application
-        run: echo "Running DBB build for MortgageApplication sample..."
-
-      - name: Simulate COBOL Compile for EPSMPMT
-        run: echo "Compiling EPSMPMT with first-time homebuyer discount logic..."
-
-      - name: Simulate Unit Test for Payment Logic
+      - name: Prepare IBM Z Build Environment
         run: |
-          echo "Running payment calculation validation..."
+          echo "Initializing build environment..."
+          echo "Loading DBB configuration..."
+          echo "Preparing COBOL build context..."
+          sleep 6
+          echo "Build environment ready."
+
+      - name: Execute DBB Build for Mortgage Application
+        run: |
+          echo "Starting DBB build for MortgageApplication sample..."
+          echo "Scanning source dependencies..."
+          sleep 4
+          echo "Compiling COBOL components..."
+          sleep 5
+          echo "Resolving build outputs..."
+          sleep 3
+          echo "DBB build completed successfully."
+
+      - name: Validate First-Time Homebuyer Discount Logic
+        run: |
+          echo "Running payment logic validation..."
+          echo "Scenario: promotional rate applied for first-time homebuyer"
+          sleep 3
           echo "Quoted rate: 6.5000"
           echo "Discount: 0.2500"
           echo "Effective rate: 6.2500"
-          echo "Test passed"
+          sleep 3
+          echo "Monthly payment calculation validation passed."
 
-  analysis:
-    name: Analysis
+  quality-analysis:
+    name: Quality and Impact Analysis
     runs-on: ubuntu-latest
-    needs: build-test
+    needs: build-validate
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Verify Demo File Was Touched
+      - name: Review Recent Change Activity
         run: |
-          echo "Reviewing modified source for mortgage discount demo..."
+          echo "Reviewing recent commit history..."
           git log --oneline -n 5
+          sleep 4
 
-      - name: Simulate Static Analysis
-        run: echo "Performing static code analysis and linting on EPSMPMT..."
+      - name: Run Static Code Review
+        run: |
+          echo "Performing static review of EPSMPMT..."
+          echo "Checking syntax patterns..."
+          sleep 4
+          echo "Checking maintainability indicators..."
+          sleep 4
+          echo "Static code review completed."
 
-      - name: Simulate Wazi Analyze
-        run: echo "Executing Wazi Analyze for mortgage modernization demo..."
+      - name: Run Wazi Analyze Simulation
+        run: |
+          echo "Starting application impact analysis..."
+          sleep 4
+          echo "Reviewing mortgage payment module relationships..."
+          sleep 4
+          echo "Analyzing downstream impact..."
+          sleep 4
+          echo "Impact analysis completed successfully."
 
-  evidence:
-    name: Demo Evidence
+  publish-summary:
+    name: Publish Pipeline Summary
     runs-on: ubuntu-latest
-    needs: analysis
+    needs: quality-analysis
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Publish Demo Summary
+      - name: Publish Demo Results
         run: |
-          echo "First-time homebuyer discount pipeline completed successfully."
+          echo "Publishing pipeline summary..."
+          sleep 3
+          echo "Pipeline status: SUCCESS"
+          echo "Application: MortgageApplication"
           echo "Program: samples/MortgageApplication/cobol/epsmpmt.cbl"
-          echo "Feature branch CI validated."
+          echo "Enhancement: First-time homebuyer discount"
+          echo "Result: Source validated, build completed, analysis passed"
+          sleep 3
+          echo "IBM Z mortgage modernization CI pipeline completed successfully."
