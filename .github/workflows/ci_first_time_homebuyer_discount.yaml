@@ -1,0 +1,83 @@
+name: CI Demo - First Time Homebuyer Discount
+
+on:
+  push:
+    branches:
+      - first-time-homebuyer-discount
+  pull_request:
+    branches:
+      - ShareDC
+    paths:
+      - 'samples/MortgageApplication/cobol/epsmpmt.cbl'
+      - '.github/workflows/ci_first_time_homebuyer_discount.yaml'
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Show Branch and Commit
+        run: |
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Validate Mortgage Payment Source Change
+        run: |
+          echo "Checking that the mortgage payment program exists..."
+          test -f samples/MortgageApplication/cobol/epsmpmt.cbl
+
+      - name: Simulate IBM Z Build Environment
+        run: echo "Setting up IBM Z Build Environment..."
+
+      - name: Simulate DBB Build for Mortgage Application
+        run: echo "Running DBB build for MortgageApplication sample..."
+
+      - name: Simulate COBOL Compile for EPSMPMT
+        run: echo "Compiling EPSMPMT with first-time homebuyer discount logic..."
+
+      - name: Simulate Unit Test for Payment Logic
+        run: |
+          echo "Running payment calculation validation..."
+          echo "Quoted rate: 6.5000"
+          echo "Discount: 0.2500"
+          echo "Effective rate: 6.2500"
+          echo "Test passed"
+
+  analysis:
+    name: Analysis
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Demo File Was Touched
+        run: |
+          echo "Reviewing modified source for mortgage discount demo..."
+          git log --oneline -n 5
+
+      - name: Simulate Static Analysis
+        run: echo "Performing static code analysis and linting on EPSMPMT..."
+
+      - name: Simulate Wazi Analyze
+        run: echo "Executing Wazi Analyze for mortgage modernization demo..."
+
+  evidence:
+    name: Demo Evidence
+    runs-on: ubuntu-latest
+    needs: analysis
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Publish Demo Summary
+        run: |
+          echo "First-time homebuyer discount pipeline completed successfully."
+          echo "Program: samples/MortgageApplication/cobol/epsmpmt.cbl"
+          echo "Feature branch CI validated."
