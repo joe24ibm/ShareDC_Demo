@@ -27,6 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Validate Source Change
         run: |
           echo "Validating source changes..."
@@ -39,6 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Run Build
         run: |
           echo "Running build..."
@@ -50,6 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Run Tests
         run: |
           echo "Running tests..."
@@ -61,6 +70,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Run Code Review Checks
         run: |
           echo "Running code review checks..."
