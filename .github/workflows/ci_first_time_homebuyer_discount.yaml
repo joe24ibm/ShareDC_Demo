@@ -1,4 +1,4 @@
-name: IBM Z Application Modernization CI
+name: Continuous Integration Pipeline
 
 on:
   push:
@@ -9,132 +9,60 @@ on:
       - ShareDC
 
 jobs:
-  source-checkout:
-    name: Source Checkout
+  checkout:
+    name: Checkout
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Display Pipeline Context
+      - name: Show Context
         run: |
-          echo "Starting IBM Z Application Modernization CI"
           echo "Branch: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
-          echo "Event: ${{ github.event_name }}"
-          sleep 3
+          sleep 2
 
-  change-validation:
-    name: Change Validation
+  validate:
+    name: Validate
     runs-on: ubuntu-latest
-    needs: source-checkout
+    needs: checkout
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Validate Changed Mortgage Source
+      - name: Validate Source Change
         run: |
-          echo "Validating modified application source..."
+          echo "Validating source changes..."
           test -f samples/MortgageApplication/cobol/epsmpmt.cbl
-          echo "Located: samples/MortgageApplication/cobol/epsmpmt.cbl"
-          sleep 4
-          echo "Source validation completed successfully."
-
-      - name: Review Recent Commit History
-        run: |
-          echo "Reviewing recent commit activity..."
-          git log --oneline -n 5
           sleep 3
+          echo "Validation complete."
 
-  impact-analysis:
-    name: Impact Analysis
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    needs: change-validation
+    needs: validate
     steps:
-      - name: Simulate Application Impact Analysis
+      - name: Run Build
         run: |
-          echo "Analyzing application impact for EPSMPMT change..."
-          sleep 4
-          echo "Reviewing dependencies related to mortgage payment processing..."
-          sleep 4
-          echo "Checking for downstream build impact..."
-          sleep 4
-          echo "Impact analysis completed successfully."
-
-  dependency-based-build:
-    name: Dependency-Based Build
-    runs-on: ubuntu-latest
-    needs: impact-analysis
-    steps:
-      - name: Prepare IBM Z Build Environment
-        run: |
-          echo "Initializing IBM Z build environment..."
-          echo "Loading DBB configuration..."
-          sleep 4
-          echo "Build environment ready."
-
-      - name: Simulate Dependency-Based Build
-        run: |
-          echo "Starting dependency-based build for MortgageApplication..."
-          sleep 4
-          echo "Scanning changed sources and related dependencies..."
-          sleep 4
-          echo "Compiling EPSMPMT..."
+          echo "Running build..."
           sleep 5
-          echo "Resolving build outputs..."
-          sleep 3
-          echo "Dependency-based build completed successfully."
+          echo "Build complete."
 
-  application-validation:
-    name: Application Validation
+  test:
+    name: Test
     runs-on: ubuntu-latest
-    needs: dependency-based-build
+    needs: build
     steps:
-      - name: Validate First-Time Homebuyer Pricing Scenario
+      - name: Run Tests
         run: |
-          echo "Running application validation scenario..."
-          sleep 3
-          echo "Scenario: first-time homebuyer promotional discount"
-          echo "Quoted rate: 6.5000"
-          echo "Discount applied: 0.2500"
-          echo "Effective rate: 6.2500"
+          echo "Running tests..."
           sleep 4
-          echo "Mortgage payment scenario validated successfully."
+          echo "Tests passed."
 
-  quality-gates:
-    name: Quality Gates
+  code-review:
+    name: Code Review
     runs-on: ubuntu-latest
-    needs: application-validation
+    needs: test
     steps:
-      - name: Simulate Static Code Review
+      - name: Run Code Review Checks
         run: |
-          echo "Running static code review..."
+          echo "Running code review checks..."
           sleep 4
-          echo "Checking source quality and maintainability..."
-          sleep 4
-          echo "Static analysis completed successfully."
-
-      - name: Simulate Modernization Analysis
-        run: |
-          echo "Running modernization-focused impact review..."
-          sleep 4
-          echo "Reviewing module relationships and change scope..."
-          sleep 4
-          echo "Quality gates passed."
-
-  publish-build-summary:
-    name: Publish Build Summary
-    runs-on: ubuntu-latest
-    needs: quality-gates
-    steps:
-      - name: Publish Summary
-        run: |
-          echo "Publishing CI summary..."
-          sleep 3
-          echo "Pipeline Status: SUCCESS"
-          echo "Application: MortgageApplication"
-          echo "Program: EPSMPMT"
-          echo "Enhancement: First-time homebuyer discount"
-          echo "Stages Completed: validation, impact analysis, build, application validation, quality gates"
-          sleep 3
-          echo "IBM Z Application Modernization CI completed successfully."
+          echo "Code review checks passed."
