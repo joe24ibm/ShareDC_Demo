@@ -118,7 +118,7 @@
            END-IF
            .
            COMPUTE WS-CALC-INTEREST =
-                              (EPSPDATA-QUOTED-INTEREST-RATE / 100) / 12
+                              ((EPSPDATA-QUOTED-INTEREST-RATE - 0.25)/ 100) / 12
            .
 
        A200-CALULATE-MONTH-PAYMENT.
